@@ -2,9 +2,6 @@ package org.example.wizard;
 
 import java.util.Scanner;
 
-/**
- * Pagrindinė klasė, kuri paleidžia žaidimą
- */
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
