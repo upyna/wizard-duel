@@ -13,6 +13,7 @@ public class Game {
     private final Scanner scanner;
     private int turnNumber;
     private String lastPlayerSpell; // Paskutinis žaidėjo burtas (kombo sinergijoms)
+    private static final int MAX_TURNS = 100; // Maksimalus ėjimų skaičius
     
     public Game(String playerName) {
         this.player = new Wizard(playerName, 100, 50);
@@ -55,7 +56,7 @@ public class Game {
         System.out.println("========================================");
         System.out.println();
         
-        while (player.isAlive() && ai.isAlive()) {
+        while (player.isAlive() && ai.isAlive() && turnNumber <= MAX_TURNS) {
             System.out.println("\n--- ĖJIMAS #" + turnNumber + " ---");
             System.out.println();
             
@@ -69,6 +70,17 @@ public class Game {
             ai.applyStatusEffects();
             
             if (!player.isAlive() || !ai.isAlive()) {
+                break;
+            }
+            
+            // Patikriname, ar žaidimas neužstrigo (abiejų pusių neturi galimų burtų)
+            boolean playerCanAct = !player.isSilenced() && !player.getAvailableSpells().isEmpty();
+            boolean aiCanAct = !ai.isSilenced() && !ai.getAvailableSpells().isEmpty();
+            boolean hasActiveStatusEffects = !player.getStatusEffects().isEmpty() || !ai.getStatusEffects().isEmpty();
+            
+            if (!playerCanAct && !aiCanAct && !hasActiveStatusEffects) {
+                System.out.println("\nŽaidimas užstrigo - abi pusės negali nieko padaryti!");
+                System.out.println("Žaidimas baigiamas pagal dabartinę būseną.");
                 break;
             }
             
@@ -99,6 +111,11 @@ public class Game {
             }
             
             turnNumber++;
+        }
+        
+        if (turnNumber > MAX_TURNS) {
+            System.out.println("\nPasiektas maksimalus ėjimų skaičius (" + MAX_TURNS + ")!");
+            System.out.println("Žaidimas baigiamas pagal dabartinę būseną.");
         }
         
         endGame();
