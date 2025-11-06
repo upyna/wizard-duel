@@ -1,8 +1,6 @@
 package org.example.wizard;
 
-/**
- * Status efektas, kurį gali turėti burtininkas
- */
+
 public class StatusEffect {
     private final StatusType type;
     private int duration;
@@ -37,10 +35,10 @@ public class StatusEffect {
     }
     
     public enum StatusType {
-        POISON,    // Nuodai - daro žalą kiekvieną ėjimą
-        SILENCE,   // Nutildymas - negali naudoti burtų
-        SHIELD,    // Apsauga - sumažina gaunamą žalą
-        REGENERATION // Regeneracija - gydo kiekvieną ėjimą
+        POISON,
+        SILENCE,
+        SHIELD,
+        REGENERATION
     }
 }
 
