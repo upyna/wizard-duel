@@ -3,17 +3,15 @@ package org.example.wizard;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Pagrindinė žaidimo logika
- */
+
 public class Game {
     private final Wizard player;
     private final Wizard ai;
     private final AI aiController;
     private final Scanner scanner;
     private int turnNumber;
-    private String lastPlayerSpell; // Paskutinis žaidėjo burtas (kombo sinergijoms)
-    private static final int MAX_TURNS = 100; // Maksimalus ėjimų skaičius
+    private String lastPlayerSpell;     
+    private static final int MAX_TURNS = 100; 
     
     public Game(String playerName) {
         this.player = new Wizard(playerName, 100, 50);
@@ -27,7 +25,6 @@ public class Game {
     }
     
     private void initializeSpells() {
-        // Žaidėjo burtai
         player.addSpell(new Spell("Ugnies kamuolys", 10, Spell.SpellType.DAMAGE, 15));
         player.addSpell(new Spell("Šalčio strėlė", 8, Spell.SpellType.DAMAGE, 12));
         player.addSpell(new Spell("Žaibo smūgis", 15, Spell.SpellType.DAMAGE, 25));
@@ -39,7 +36,6 @@ public class Game {
         player.addSpell(new Spell("Nutildymas", 12, Spell.SpellType.STATUS, 0,
                 new StatusEffect(StatusEffect.StatusType.SILENCE, 2, 0)));
         
-        // AI burtai
         ai.addSpell(new Spell("Tamsos strėlė", 10, Spell.SpellType.DAMAGE, 15));
         ai.addSpell(new Spell("Demonų liepsna", 12, Spell.SpellType.DAMAGE, 18));
         ai.addSpell(new Spell("Mirties žvilgsnis", 18, Spell.SpellType.DAMAGE, 30));
@@ -60,12 +56,10 @@ public class Game {
             System.out.println("\n--- ĖJIMAS #" + turnNumber + " ---");
             System.out.println();
             
-            // Rodo burtininkų būseną
             System.out.println(player.getStatusString());
             System.out.println(ai.getStatusString());
             System.out.println();
             
-            // Taikome status efektus prieš ėjimą
             player.applyStatusEffects();
             ai.applyStatusEffects();
             
@@ -73,7 +67,6 @@ public class Game {
                 break;
             }
             
-            // Patikriname, ar žaidimas neužstrigo (abiejų pusių neturi galimų burtų)
             boolean playerCanAct = !player.isSilenced() && !player.getAvailableSpells().isEmpty();
             boolean aiCanAct = !ai.isSilenced() && !ai.getAvailableSpells().isEmpty();
             boolean hasActiveStatusEffects = !player.getStatusEffects().isEmpty() || !ai.getStatusEffects().isEmpty();
@@ -84,7 +77,6 @@ public class Game {
                 break;
             }
             
-            // Žaidėjo ėjimas
             if (!player.isSilenced()) {
                 playerTurn();
             } else {
@@ -95,13 +87,16 @@ public class Game {
                 break;
             }
             
-            // Manos regeneracija
             player.restoreMana(5);
             ai.restoreMana(5);
             
-            // AI ėjimas
             if (!ai.isSilenced()) {
-                aiTurn();
+                List<Spell> aiAvailableSpells = ai.getAvailableSpells();
+                if (aiAvailableSpells.isEmpty()) {
+                    System.out.println("AI burtininkas neturi pakankamai manos burtų naudoti!");
+                } else {
+                    aiTurn();
+                }
             } else {
                 System.out.println("AI burtininkas nutildytas ir negali naudoti burtų!");
             }
@@ -150,12 +145,10 @@ public class Game {
         
         Spell chosenSpell = availableSpells.get(choice - 1);
         castSpell(player, ai, chosenSpell);
-        // Nustatome paskutinį burto po naudojimo, kad kombo veiktų tik nuo antro ėjimo
         lastPlayerSpell = chosenSpell.getName();
     }
     
     private void aiTurn() {
-        // Papildomas patikrinimas - ar AI turi galimų burtų
         List<Spell> availableSpells = ai.getAvailableSpells();
         if (availableSpells.isEmpty()) {
             System.out.println("AI burtininkas neturi pakankamai manos!");
@@ -169,7 +162,6 @@ public class Game {
             return;
         }
         
-        // Papildomas patikrinimas prieš naudojant burtą
         if (!chosenSpell.canUse(ai.getMana())) {
             System.out.println("AI burtininkas neturi pakankamai manos naudoti " + chosenSpell.getName() + "!");
             return;
@@ -180,19 +172,15 @@ public class Game {
     }
     
     private void castSpell(Wizard caster, Wizard target, Spell spell) {
-        // Patikriname, ar caster turi pakankamai manos
         if (!spell.canUse(caster.getMana())) {
             System.out.println(caster.getName() + " neturi pakankamai manos!");
             return;
         }
         
-        // Sunaudojame maną
         caster.useMana(spell.getManaCost());
         
-        // Kombo sinergijos patikrinimas
         int comboMultiplier = checkCombo(caster, spell);
         
-        // Taikome burto efektą
         switch (spell.getType()) {
             case DAMAGE:
                 int damage = spell.getValue() * comboMultiplier;
@@ -213,10 +201,9 @@ public class Game {
                 break;
                 
             case PROTECTION:
-                int shield = spell.getValue();
-                // Pridedame status efektą, kad apsauga išnyktų po 3 ėjimų
+                int shield = spell.getValue(); 
                 StatusEffect shieldEffect = new StatusEffect(StatusEffect.StatusType.SHIELD, 3, shield);
-                caster.addStatusEffect(shieldEffect); // addStatusEffect nustato shield automatiškai
+                caster.addStatusEffect(shieldEffect); 
                 System.out.println("  " + caster.getName() + " gauna " + shield + " apsaugos (3 ėjimai)!");
                 break;
                 
@@ -241,10 +228,9 @@ public class Game {
     }
     
     private int checkCombo(Wizard caster, Spell spell) {
-        // Kombo sinergijos: jei naudojamas tas pats burtas du kartus iš eilės
         if (caster == player && lastPlayerSpell != null && 
             lastPlayerSpell.equals(spell.getName())) {
-            return 2; // 2x daugiau žalos/gydymo
+            return 2; 
         }
         return 1;
     }
@@ -254,14 +240,12 @@ public class Game {
         System.out.println("   ŽAIDIMAS BAIGTAS");
         System.out.println("========================================");
         
-        // Patikriname, ar abi pusės gyvos, bet negali nieko padaryti (užstrigo)
         boolean playerCanAct = !player.isSilenced() && !player.getAvailableSpells().isEmpty();
         boolean aiCanAct = !ai.isSilenced() && !ai.getAvailableSpells().isEmpty();
         boolean hasActiveStatusEffects = !player.getStatusEffects().isEmpty() || !ai.getStatusEffects().isEmpty();
         boolean gameStuck = player.isAlive() && ai.isAlive() && !playerCanAct && !aiCanAct && !hasActiveStatusEffects;
         
         if (gameStuck) {
-            // Žaidimas užstrigo - nustatome laimėtoją pagal gyvybes
             if (player.getHealth() > ai.getHealth()) {
                 System.out.println("ŽAIDIMAS UŽSTRIGO - JŪS LAIMĖJOTE!");
                 System.out.println("(Jūs turite daugiau gyvybių: " + player.getHealth() + " vs " + ai.getHealth() + ")");
@@ -279,7 +263,6 @@ public class Game {
         } else if (!ai.isAlive()) {
             System.out.println("JŪS LAIMĖJOTE!");
         } else {
-            // Jei pasiektas maksimalus ėjimų skaičius, nustatome laimėtoją pagal gyvybes
             if (player.getHealth() > ai.getHealth()) {
                 System.out.println("JŪS LAIMĖJOTE!");
                 System.out.println("(Jūs turite daugiau gyvybių: " + player.getHealth() + " vs " + ai.getHealth() + ")");
