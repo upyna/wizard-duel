@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Burtininkas su gyvybėmis, mana ir burtų rinkiniu
- */
 public class Wizard {
     private final String name;
     private int health;
@@ -15,8 +12,8 @@ public class Wizard {
     private int maxMana;
     private final List<Spell> spells;
     private final List<StatusEffect> statusEffects;
-    private boolean silenced; // Ar nutildytas (negali naudoti burtų)
-    private int shield; // Apsaugos kiekis
+    private boolean silenced;
+    private int shield;
     
     public Wizard(String name, int health, int mana) {
         this.name = name;
@@ -73,7 +70,6 @@ public class Wizard {
     }
     
     public void takeDamage(int damage) {
-        // Apsauga sumažina žalą
         int actualDamage = Math.max(0, damage - shield);
         health = Math.max(0, health - actualDamage);
     }
@@ -101,7 +97,6 @@ public class Wizard {
     }
     
     public void applyStatusEffects() {
-        // Taikome status efektus kiekvieną ėjimą
         List<StatusEffect> toRemove = new ArrayList<>();
         
         for (StatusEffect effect : statusEffects) {
@@ -115,10 +110,8 @@ public class Wizard {
                     System.out.println("  " + name + " regeneruojasi: +" + effect.getValue() + " gyvybių");
                     break;
                 case SILENCE:
-                    // Silence is handled by the silenced flag, no action needed per turn
                     break;
                 case SHIELD:
-                    // Shield is handled by the shield field, no action needed per turn
                     break;
             }
             
