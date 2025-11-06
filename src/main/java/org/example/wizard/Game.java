@@ -155,10 +155,23 @@ public class Game {
     }
     
     private void aiTurn() {
+        // Papildomas patikrinimas - ar AI turi galimų burtų
+        List<Spell> availableSpells = ai.getAvailableSpells();
+        if (availableSpells.isEmpty()) {
+            System.out.println("AI burtininkas neturi pakankamai manos!");
+            return;
+        }
+        
         Spell chosenSpell = aiController.chooseSpell(ai, player);
         
         if (chosenSpell == null) {
             System.out.println("AI burtininkas neturi pakankamai manos!");
+            return;
+        }
+        
+        // Papildomas patikrinimas prieš naudojant burtą
+        if (!chosenSpell.canUse(ai.getMana())) {
+            System.out.println("AI burtininkas neturi pakankamai manos naudoti " + chosenSpell.getName() + "!");
             return;
         }
         
@@ -241,12 +254,42 @@ public class Game {
         System.out.println("   ŽAIDIMAS BAIGTAS");
         System.out.println("========================================");
         
-        if (!player.isAlive() && !ai.isAlive()) {
+        // Patikriname, ar abi pusės gyvos, bet negali nieko padaryti (užstrigo)
+        boolean playerCanAct = !player.isSilenced() && !player.getAvailableSpells().isEmpty();
+        boolean aiCanAct = !ai.isSilenced() && !ai.getAvailableSpells().isEmpty();
+        boolean hasActiveStatusEffects = !player.getStatusEffects().isEmpty() || !ai.getStatusEffects().isEmpty();
+        boolean gameStuck = player.isAlive() && ai.isAlive() && !playerCanAct && !aiCanAct && !hasActiveStatusEffects;
+        
+        if (gameStuck) {
+            // Žaidimas užstrigo - nustatome laimėtoją pagal gyvybes
+            if (player.getHealth() > ai.getHealth()) {
+                System.out.println("ŽAIDIMAS UŽSTRIGO - JŪS LAIMĖJOTE!");
+                System.out.println("(Jūs turite daugiau gyvybių: " + player.getHealth() + " vs " + ai.getHealth() + ")");
+            } else if (ai.getHealth() > player.getHealth()) {
+                System.out.println("ŽAIDIMAS UŽSTRIGO - AI BURTININKAS LAIMĖJO!");
+                System.out.println("(AI turi daugiau gyvybių: " + ai.getHealth() + " vs " + player.getHealth() + ")");
+            } else {
+                System.out.println("ŽAIDIMAS UŽSTRIGO - LYGIOSIOS!");
+                System.out.println("(Abi pusės turi vienodas gyvybes: " + player.getHealth() + ")");
+            }
+        } else if (!player.isAlive() && !ai.isAlive()) {
             System.out.println("LYGIOSIOS! Abu burtininkai pralaimėjo!");
         } else if (!player.isAlive()) {
             System.out.println("AI BURTININKAS LAIMĖJO!");
-        } else {
+        } else if (!ai.isAlive()) {
             System.out.println("JŪS LAIMĖJOTE!");
+        } else {
+            // Jei pasiektas maksimalus ėjimų skaičius, nustatome laimėtoją pagal gyvybes
+            if (player.getHealth() > ai.getHealth()) {
+                System.out.println("JŪS LAIMĖJOTE!");
+                System.out.println("(Jūs turite daugiau gyvybių: " + player.getHealth() + " vs " + ai.getHealth() + ")");
+            } else if (ai.getHealth() > player.getHealth()) {
+                System.out.println("AI BURTININKAS LAIMĖJO!");
+                System.out.println("(AI turi daugiau gyvybių: " + ai.getHealth() + " vs " + player.getHealth() + ")");
+            } else {
+                System.out.println("LYGIOSIOS!");
+                System.out.println("(Abi pusės turi vienodas gyvybes: " + player.getHealth() + ")");
+            }
         }
         
         System.out.println("\nGalutinė būsena:");
