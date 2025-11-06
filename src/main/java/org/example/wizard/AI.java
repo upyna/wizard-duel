@@ -3,9 +3,6 @@ package org.example.wizard;
 import java.util.List;
 import java.util.Random;
 
-/**
- * AI logika priešininkui
- */
 public class AI {
     private final Random random;
     
@@ -13,27 +10,17 @@ public class AI {
         this.random = new Random();
     }
     
-    /**
-     * AI renkasi geriausią burto kortą pagal situaciją
-     */
     public Spell chooseSpell(Wizard aiWizard, Wizard playerWizard) {
         List<Spell> availableSpells = aiWizard.getAvailableSpells();
         
         if (availableSpells.isEmpty()) {
-            return null; // Nėra galimų burtų
+            return null; 
         }
-        
-        // Strategija:
-        // 1. Jei mažai gyvybių - gydytis
-        // 2. Jei mažai manos - bandyti sunaudoti priešininko maną
-        // 3. Jei priešininkas turi daug gyvybių - daryti žalą
-        // 4. Jei priešininkas turi mažai gyvybių - daryti didelę žalą
         
         double healthRatio = (double) aiWizard.getHealth() / aiWizard.getMaxHealth();
         double playerHealthRatio = (double) playerWizard.getHealth() / playerWizard.getMaxHealth();
         double manaRatio = (double) aiWizard.getMana() / aiWizard.getMaxMana();
         
-        // Jei mažai gyvybių (<30%) - prioritetas gydymui
         if (healthRatio < 0.3) {
             Spell healSpell = findSpellByType(availableSpells, Spell.SpellType.HEAL);
             if (healSpell != null) {
@@ -41,7 +28,6 @@ public class AI {
             }
         }
         
-        // Jei mažai manos - bandyti sunaudoti priešininko maną
         if (manaRatio < 0.3 && playerWizard.getMana() > 5) {
             Spell manaDrainSpell = findSpellByType(availableSpells, Spell.SpellType.MANA_DRAIN);
             if (manaDrainSpell != null) {
@@ -49,7 +35,6 @@ public class AI {
             }
         }
         
-        // Jei priešininkas turi mažai gyvybių - daryti didelę žalą
         if (playerHealthRatio < 0.3) {
             Spell highDamageSpell = findHighestDamageSpell(availableSpells);
             if (highDamageSpell != null) {
@@ -57,7 +42,6 @@ public class AI {
             }
         }
         
-        // Jei priešininkas neturi status efektų - pridėti nuodų
         if (!playerWizard.getStatusEffects().stream()
                 .anyMatch(e -> e.getType() == StatusEffect.StatusType.POISON)) {
             Spell poisonSpell = findSpellWithStatus(availableSpells, StatusEffect.StatusType.POISON);
@@ -66,13 +50,11 @@ public class AI {
             }
         }
         
-        // Standartinis pasirinkimas - didžiausia žala arba atsitiktinis
         Spell damageSpell = findHighestDamageSpell(availableSpells);
         if (damageSpell != null && random.nextDouble() < 0.7) {
             return damageSpell;
         }
         
-        // Atsitiktinis pasirinkimas
         return availableSpells.get(random.nextInt(availableSpells.size()));
     }
     
