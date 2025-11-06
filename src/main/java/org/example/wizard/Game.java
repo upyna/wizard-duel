@@ -149,8 +149,9 @@ public class Game {
         }
         
         Spell chosenSpell = availableSpells.get(choice - 1);
-        lastPlayerSpell = chosenSpell.getName();
         castSpell(player, ai, chosenSpell);
+        // Nustatome paskutinį burto po naudojimo, kad kombo veiktų tik nuo antro ėjimo
+        lastPlayerSpell = chosenSpell.getName();
     }
     
     private void aiTurn() {
