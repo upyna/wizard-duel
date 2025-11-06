@@ -3,16 +3,14 @@ package org.example.wizard;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Burtas, kurį gali naudoti burtininkas
- */
+
 public class Spell {
     private final String name;
     private final int manaCost;
     private final SpellType type;
     private final int value;
-    private final StatusEffect statusEffect; // Status efektas, kurį suteikia burtas
-    private final List<String> comboTriggers; // Kombo sinergijos
+    private final StatusEffect statusEffect;
+    private final List<String> comboTriggers;
     
     public Spell(String name, int manaCost, SpellType type, int value) {
         this(name, manaCost, type, value, null, new ArrayList<>());
@@ -61,11 +59,11 @@ public class Spell {
     }
     
     public enum SpellType {
-        DAMAGE,      // Žala
-        HEAL,        // Gydymas
-        PROTECTION,  // Apsauga
-        MANA_DRAIN,  // Manos sunaudojimas
-        STATUS       // Status efektas
+        DAMAGE,
+        HEAL,
+        PROTECTION,
+        MANA_DRAIN,
+        STATUS
     }
     
     @Override
