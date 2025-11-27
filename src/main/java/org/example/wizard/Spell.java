@@ -12,16 +12,16 @@ public class Spell {
     private final StatusEffect statusEffect;
     private final List<String> comboTriggers;
     
-    public Spell(String name, int manaCost, SpellType type, int value) {
+    public Spell(String name, int manaCost, SpellType type, int value) { // Paprastas
         this(name, manaCost, type, value, null, new ArrayList<>());
     }
     
-    public Spell(String name, int manaCost, SpellType type, int value, StatusEffect statusEffect) {
+    public Spell(String name, int manaCost, SpellType type, int value, StatusEffect statusEffect) { // Su efektu, pvz nuodu dumai(POISON)
         this(name, manaCost, type, value, statusEffect, new ArrayList<>());
     }
     
     public Spell(String name, int manaCost, SpellType type, int value, 
-                 StatusEffect statusEffect, List<String> comboTriggers) {
+                 StatusEffect statusEffect, List<String> comboTriggers) { // Su kombo
         this.name = name;
         this.manaCost = manaCost;
         this.type = type;
@@ -56,7 +56,7 @@ public class Spell {
     
     public boolean canUse(int currentMana) {
         return currentMana >= manaCost;
-    }
+    } // Tik galimu sarasas
     
     public enum SpellType {
         DAMAGE,
