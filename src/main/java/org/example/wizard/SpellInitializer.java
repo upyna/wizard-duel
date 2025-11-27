@@ -2,31 +2,31 @@ package org.example.wizard;
 
 /**
  * DRY principas: centralizuota burtų inicializacija, kad būtų išvengta pasikartojančio kodo.
+ * Design Pattern: Factory Method - naudoja SpellFactory objektų sukūrimui.
  */
 public class SpellInitializer {
     
     public static void initializePlayerSpells(Character player) {
-        player.addSpell(new Spell("Ugnies kamuolys", 10, Spell.SpellType.DAMAGE, 15));
-        player.addSpell(new Spell("Šalčio strėlė", 8, Spell.SpellType.DAMAGE, 12));
-        player.addSpell(new Spell("Žaibo smūgis", 15, Spell.SpellType.DAMAGE, 25));
-        player.addSpell(new Spell("Gydymo burtas", 12, Spell.SpellType.HEAL, 20));
-        player.addSpell(new Spell("Mano vanduo", 5, Spell.SpellType.MANA_DRAIN, 10));
-        player.addSpell(new Spell("Nuodų dūmai", 10, Spell.SpellType.STATUS, 0, 
-                new StatusEffect(StatusEffect.StatusType.POISON, 3, 5)));
-        player.addSpell(new Spell("Apsaugos skydas", 8, Spell.SpellType.PROTECTION, 10));
-        player.addSpell(new Spell("Nutildymas", 12, Spell.SpellType.STATUS, 0,
-                new StatusEffect(StatusEffect.StatusType.SILENCE, 2, 0)));
+        // Design Pattern: Factory Method - naudojame SpellFactory objektų sukūrimui
+        player.addSpell(SpellFactory.createDamageSpell("Ugnies kamuolys", 10, 15));
+        player.addSpell(SpellFactory.createDamageSpell("Šalčio strėlė", 8, 12));
+        player.addSpell(SpellFactory.createDamageSpell("Žaibo smūgis", 15, 25));
+        player.addSpell(SpellFactory.createHealSpell("Gydymo burtas", 12, 20));
+        player.addSpell(SpellFactory.createManaDrainSpell("Mano vanduo", 5, 10));
+        player.addSpell(SpellFactory.createPoisonSpell("Nuodų dūmai", 10, 3, 5));
+        player.addSpell(SpellFactory.createProtectionSpell("Apsaugos skydas", 8, 10));
+        player.addSpell(SpellFactory.createSilenceSpell("Nutildymas", 12, 2));
     }
     
     public static void initializeAISpells(Character ai) {
-        ai.addSpell(new Spell("Tamsos strėlė", 10, Spell.SpellType.DAMAGE, 15));
-        ai.addSpell(new Spell("Demonų liepsna", 12, Spell.SpellType.DAMAGE, 18));
-        ai.addSpell(new Spell("Mirties žvilgsnis", 18, Spell.SpellType.DAMAGE, 30));
-        ai.addSpell(new Spell("Gyvybės atgavimas", 12, Spell.SpellType.HEAL, 20));
-        ai.addSpell(new Spell("Mano vamzdis", 5, Spell.SpellType.MANA_DRAIN, 10));
-        ai.addSpell(new Spell("Nuodų dūmai", 10, Spell.SpellType.STATUS, 0,
-                new StatusEffect(StatusEffect.StatusType.POISON, 3, 5)));
-        ai.addSpell(new Spell("Apsaugos skydas", 8, Spell.SpellType.PROTECTION, 10));
+        // Design Pattern: Factory Method - naudojame SpellFactory objektų sukūrimui
+        ai.addSpell(SpellFactory.createDamageSpell("Tamsos strėlė", 10, 15));
+        ai.addSpell(SpellFactory.createDamageSpell("Demonų liepsna", 12, 18));
+        ai.addSpell(SpellFactory.createDamageSpell("Mirties žvilgsnis", 18, 30));
+        ai.addSpell(SpellFactory.createHealSpell("Gyvybės atgavimas", 12, 20));
+        ai.addSpell(SpellFactory.createManaDrainSpell("Mano vamzdis", 5, 10));
+        ai.addSpell(SpellFactory.createPoisonSpell("Nuodų dūmai", 10, 3, 5));
+        ai.addSpell(SpellFactory.createProtectionSpell("Apsaugos skydas", 8, 10));
     }
 }
 
