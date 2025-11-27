@@ -1,25 +1,40 @@
 package org.example.wizard;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
+/**
+ * Polimorfizmas: Game klasėje naudojami Combatant objektai per bendrą tipą.
+ * Visi veikėjai gali būti atnaujinami per update() metodą, nepaisant jų konkretaus tipo.
+ */
 public class Game {
     private final Wizard player;
     private final Wizard ai;
     private final AI aiController;
     private final Scanner scanner;
     private int turnNumber;
-    private String lastPlayerSpell;     
+    private String lastPlayerSpell;
+    
+    // Polimorfizmas: sąrašas, kuriame laikomi skirtingų tipų objektai per bendrą Combatant tipą
+    private final List<Combatant> combatants;
+    
     private static final int MAX_TURNS = 100; 
     
     public Game(String playerName) {
         this.player = new Wizard(playerName, 100, 50);
+        // AI turi būti Wizard, kad elgtųsi taip pat kaip prieš refaktoringą
         this.ai = new Wizard("AI Burtininkas", 100, 50);
         this.aiController = new AI();
         this.scanner = new Scanner(System.in);
         this.turnNumber = 1;
         this.lastPlayerSpell = null;
+        
+        // Polimorfizmas: įtraukiame visus kovotojus į sąrašą per bendrą Combatant tipą
+        // Visi objektai gali būti naudojami per bendrą tipą, bet elgiasi taip pat kaip prieš refaktoringą
+        this.combatants = new ArrayList<>();
+        this.combatants.add(player);
+        this.combatants.add(ai);
         
         initializeSpells();
     }
@@ -60,8 +75,11 @@ public class Game {
             System.out.println(ai.getStatusString());
             System.out.println();
             
-            player.applyStatusEffects();
-            ai.applyStatusEffects();
+            // Polimorfizmas: visi kovotojai atnaujinami per bendrą update() metodą,
+            // nepaisant jų konkretaus tipo (Wizard, AggressiveWizard, DefensiveWizard, etc.)
+            for (Combatant combatant : combatants) {
+                combatant.update();
+            }
             
             if (!player.isAlive() || !ai.isAlive()) {
                 break;
@@ -145,7 +163,7 @@ public class Game {
         
         Spell chosenSpell = availableSpells.get(choice - 1);
         castSpell(player, ai, chosenSpell);
-        lastPlayerSpell = chosenSpell.getName();
+        lastPlayerSpell = chosenSpell.getName(); // Kombo sistemai
     }
     
     private void aiTurn() {
@@ -155,7 +173,7 @@ public class Game {
             return;
         }
         
-        Spell chosenSpell = aiController.chooseSpell(ai, player);
+        Spell chosenSpell = aiController.chooseSpell(ai, player); // AI renkas burta
         
         if (chosenSpell == null) {
             System.out.println("AI burtininkas neturi pakankamai manos!");
@@ -171,7 +189,7 @@ public class Game {
         castSpell(ai, player, chosenSpell);
     }
     
-    private void castSpell(Wizard caster, Wizard target, Spell spell) {
+    private void castSpell(Character caster, Character target, Spell spell) {
         if (!spell.canUse(caster.getMana())) {
             System.out.println(caster.getName() + " neturi pakankamai manos!");
             return;
@@ -179,7 +197,7 @@ public class Game {
         
         caster.useMana(spell.getManaCost());
         
-        int comboMultiplier = checkCombo(caster, spell);
+        int comboMultiplier = checkCombo(caster, spell); // Ar veikia kombo??
         
         switch (spell.getType()) {
             case DAMAGE:
@@ -227,7 +245,7 @@ public class Game {
         }
     }
     
-    private int checkCombo(Wizard caster, Spell spell) {
+    private int checkCombo(Character caster, Spell spell) {
         if (caster == player && lastPlayerSpell != null && 
             lastPlayerSpell.equals(spell.getName())) {
             return 2; 
@@ -247,13 +265,13 @@ public class Game {
         
         if (gameStuck) {
             if (player.getHealth() > ai.getHealth()) {
-                System.out.println("ŽAIDIMAS UŽSTRIGO - JŪS LAIMĖJOTE!");
+                System.out.println("ŽAIDIMAS PASIBAIGĖ - JŪS LAIMĖJOTE!");
                 System.out.println("(Jūs turite daugiau gyvybių: " + player.getHealth() + " vs " + ai.getHealth() + ")");
             } else if (ai.getHealth() > player.getHealth()) {
-                System.out.println("ŽAIDIMAS UŽSTRIGO - AI BURTININKAS LAIMĖJO!");
+                System.out.println("ŽAIDIMAS PASIBAIGĖ - AI BURTININKAS LAIMĖJO!");
                 System.out.println("(AI turi daugiau gyvybių: " + ai.getHealth() + " vs " + player.getHealth() + ")");
             } else {
-                System.out.println("ŽAIDIMAS UŽSTRIGO - LYGIOSIOS!");
+                System.out.println("ŽAIDIMAS PASIBAIGĖ - LYGIOSIOS!");
                 System.out.println("(Abi pusės turi vienodas gyvybes: " + player.getHealth() + ")");
             }
         } else if (!player.isAlive() && !ai.isAlive()) {
