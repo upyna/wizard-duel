@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Abstrakcija: Abstrakti klasė, apibrėžianti bendrą visų veikėjų elgesį.
- * Paveldėjimas: Wizard ir kitos klasės paveldės iš šios klasės.
- */
 public abstract class Character implements Combatant {
-    // Inkapsuliacija: visi laukai yra private
     private final String name;
     private int health;
     private int maxHealth;
@@ -32,7 +27,6 @@ public abstract class Character implements Combatant {
         this.shield = 0;
     }
     
-    // Inkapsuliacija: prieiga prie duomenų per getterius/setterius
     public String getName() {
         return name;
     }
@@ -117,11 +111,7 @@ public abstract class Character implements Combatant {
             setShield(effect.getValue());
         }
     }
-    
-    /**
-     * Polimorfizmas: update() metodas, kurį gali naudoti skirtingi objektai per bendrą tipą.
-     * Visi Character objektai gali būti atnaujinami per šį metodą.
-     */
+
     @Override
     public void update() {
         applyStatusEffects();
@@ -131,35 +121,41 @@ public abstract class Character implements Combatant {
         List<StatusEffect> toRemove = new ArrayList<>();
         
         for (StatusEffect effect : statusEffects) {
-            switch (effect.getType()) {
-                case POISON:
-                    takeDamage(effect.getValue());
-                    System.out.println("  " + getName() + " kenčia nuo nuodų: -" + effect.getValue() + " gyvybių");
-                    break;
-                case REGENERATION:
-                    heal(effect.getValue());
-                    System.out.println("  " + getName() + " regeneruojasi: +" + effect.getValue() + " gyvybių");
-                    break;
-                case SILENCE:
-                    break;
-                case SHIELD:
-                    break;
-            }
-            
+            applyStatusEffect(effect);
             effect.reduceDuration();
             
             if (!effect.isActive()) {
                 toRemove.add(effect);
-                if (effect.getType() == StatusEffect.StatusType.SILENCE) {
-                    setSilenced(false);
-                }
-                if (effect.getType() == StatusEffect.StatusType.SHIELD) {
-                    setShield(0);
-                }
+                removeExpiredEffect(effect);
             }
         }
         
         statusEffects.removeAll(toRemove);
+    }
+    
+    private void applyStatusEffect(StatusEffect effect) {
+        switch (effect.getType()) {
+            case POISON:
+                takeDamage(effect.getValue());
+                System.out.println("  " + getName() + " kenčia nuo nuodų: -" + effect.getValue() + " gyvybių");
+                break;
+            case REGENERATION:
+                heal(effect.getValue());
+                System.out.println("  " + getName() + " regeneruojasi: +" + effect.getValue() + " gyvybių");
+                break;
+            case SILENCE:
+            case SHIELD:
+                break;
+        }
+    }
+    
+    private void removeExpiredEffect(StatusEffect effect) {
+        if (effect.getType() == StatusEffect.StatusType.SILENCE) {
+            setSilenced(false);
+        }
+        if (effect.getType() == StatusEffect.StatusType.SHIELD) {
+            setShield(0);
+        }
     }
     
     @Override
@@ -190,4 +186,3 @@ public abstract class Character implements Combatant {
         return sb.toString();
     }
 }
-
