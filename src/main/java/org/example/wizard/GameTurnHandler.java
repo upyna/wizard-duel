@@ -2,9 +2,6 @@ package org.example.wizard;
 
 import java.util.List;
 
-/**
- * DRY principas: centralizuota ėjimo logika, kad būtų sumažintas Game klasės dydis.
- */
 public class GameTurnHandler {
     
     public static void printGameHeader() {
@@ -30,7 +27,6 @@ public class GameTurnHandler {
     }
     
     public static void updateCombatants(List<Combatant> combatants) {
-        // Polimorfizmas: visi kovotojai atnaujinami per bendrą update() metodą
         for (Combatant combatant : combatants) {
             combatant.update();
         }
@@ -48,4 +44,3 @@ public class GameTurnHandler {
         }
     }
 }
-
