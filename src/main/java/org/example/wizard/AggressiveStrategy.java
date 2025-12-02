@@ -2,10 +2,6 @@ package org.example.wizard;
 
 import java.util.List;
 
-/**
- * Design Pattern: Strategy
- * Agresyvus strategija - visada renkasi didžiausią žalą darantį burtą.
- */
 public class AggressiveStrategy implements AIStrategy {
     
     @Override
@@ -14,13 +10,11 @@ public class AggressiveStrategy implements AIStrategy {
             return null;
         }
         
-        // Agresyvus priešas renkasi didžiausią žalą darantį burtą
         Spell bestDamageSpell = findHighestDamageSpell(availableSpells);
         if (bestDamageSpell != null) {
             return bestDamageSpell;
         }
         
-        // Jei nėra žalos darančių burtų, naudoja bet kurį galimą
         return availableSpells.isEmpty() ? null : availableSpells.get(0);
     }
     
@@ -31,4 +25,3 @@ public class AggressiveStrategy implements AIStrategy {
                 .orElse(null);
     }
 }
-
