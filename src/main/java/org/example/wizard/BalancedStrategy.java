@@ -3,10 +3,6 @@ package org.example.wizard;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Design Pattern: Strategy
- * Subalansuota strategija - naudoja įvairius burtus pagal situaciją.
- */
 public class BalancedStrategy implements AIStrategy {
     private final Random random;
     
@@ -24,7 +20,6 @@ public class BalancedStrategy implements AIStrategy {
         double playerHealthRatio = (double) playerWizard.getHealth() / playerWizard.getMaxHealth();
         double manaRatio = (double) aiWizard.getMana() / aiWizard.getMaxMana();
         
-        // Jei mažai gyvybių, bando gydytis
         if (healthRatio < 0.3) {
             Spell healSpell = findSpellByType(availableSpells, Spell.SpellType.HEAL);
             if (healSpell != null) {
@@ -32,7 +27,6 @@ public class BalancedStrategy implements AIStrategy {
             }
         }
         
-        // Jei mažai manos, bando atimti priešininko mano
         if (manaRatio < 0.3 && playerWizard.getMana() > 5) {
             Spell manaDrainSpell = findSpellByType(availableSpells, Spell.SpellType.MANA_DRAIN);
             if (manaDrainSpell != null) {
@@ -40,7 +34,6 @@ public class BalancedStrategy implements AIStrategy {
             }
         }
         
-        // Jei priešininkas mažai gyvybių, bando baigti kovą
         if (playerHealthRatio < 0.3) {
             Spell highDamageSpell = findHighestDamageSpell(availableSpells);
             if (highDamageSpell != null) {
@@ -48,7 +41,6 @@ public class BalancedStrategy implements AIStrategy {
             }
         }
         
-        // Kartais naudoja status efektus
         if (!playerWizard.getStatusEffects().stream()
                 .anyMatch(e -> e.getType() == StatusEffect.StatusType.POISON)) {
             Spell poisonSpell = findSpellWithStatus(availableSpells, StatusEffect.StatusType.POISON);
@@ -57,13 +49,11 @@ public class BalancedStrategy implements AIStrategy {
             }
         }
         
-        // Dažniausiai atakuoja
         Spell damageSpell = findHighestDamageSpell(availableSpells);
         if (damageSpell != null && random.nextDouble() < 0.7) {
             return damageSpell;
         }
         
-        // Random pasirinkimas
         return availableSpells.get(random.nextInt(availableSpells.size()));
     }
     
@@ -89,4 +79,3 @@ public class BalancedStrategy implements AIStrategy {
                 .orElse(null);
     }
 }
-
