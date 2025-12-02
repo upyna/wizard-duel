@@ -1,9 +1,5 @@
 package org.example.wizard;
 
-/**
- * DRY principas: centralizuota žaidimo rezultatų spausdinimo logika.
- * Sumažina Game klasės dydį ir sudėtingumą.
- */
 public class GameResultPrinter {
     
     public static void printResult(Character player, Character ai) {
@@ -57,4 +53,3 @@ public class GameResultPrinter {
         System.out.println(ai.getStatusString());
     }
 }
-
