@@ -1,9 +1,5 @@
 package org.example.wizard;
 
-/**
- * DRY principas: centralizuota burtų naudojimo logika.
- * Sumažina Game klasės dydį ir sudėtingumą.
- */
 public class SpellCaster {
     
     private static final int SHIELD_DURATION = 3;
@@ -91,4 +87,3 @@ public class SpellCaster {
         return defaultMultiplier;
     }
 }
-
