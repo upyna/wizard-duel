@@ -1,13 +1,8 @@
 package org.example.wizard;
 
-/**
- * DRY principas: centralizuota burtų inicializacija, kad būtų išvengta pasikartojančio kodo.
- * Design Pattern: Factory Method - naudoja SpellFactory objektų sukūrimui.
- */
 public class SpellInitializer {
     
     public static void initializePlayerSpells(Character player) {
-        // Design Pattern: Factory Method - naudojame SpellFactory objektų sukūrimui
         player.addSpell(SpellFactory.createDamageSpell("Ugnies kamuolys", 10, 15));
         player.addSpell(SpellFactory.createDamageSpell("Šalčio strėlė", 8, 12));
         player.addSpell(SpellFactory.createDamageSpell("Žaibo smūgis", 15, 25));
@@ -19,7 +14,6 @@ public class SpellInitializer {
     }
     
     public static void initializeAISpells(Character ai) {
-        // Design Pattern: Factory Method - naudojame SpellFactory objektų sukūrimui
         ai.addSpell(SpellFactory.createDamageSpell("Tamsos strėlė", 10, 15));
         ai.addSpell(SpellFactory.createDamageSpell("Demonų liepsna", 12, 18));
         ai.addSpell(SpellFactory.createDamageSpell("Mirties žvilgsnis", 18, 30));
@@ -29,4 +23,3 @@ public class SpellInitializer {
         ai.addSpell(SpellFactory.createProtectionSpell("Apsaugos skydas", 8, 10));
     }
 }
-
