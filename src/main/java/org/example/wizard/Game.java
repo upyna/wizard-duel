@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Polimorfizmas: Game klasėje naudojami Combatant objektai per bendrą tipą.
- * Visi veikėjai gali būti atnaujinami per update() metodą, nepaisant jų konkretaus tipo.
- */
 public class Game {
     private final Wizard player;
     private final Character ai;
@@ -15,11 +11,7 @@ public class Game {
     private final Scanner scanner;
     private int turnNumber;
     private String lastPlayerSpell;
-    
-    // Polimorfizmas: sąrašas, kuriame laikomi skirtingų tipų objektai per bendrą Combatant tipą
     private final List<Combatant> combatants;
-    
-    // Konstantos vietoj magic numbers
     private static final int MAX_TURNS = 100;
     private static final int DEFAULT_HEALTH = 100;
     private static final int DEFAULT_MANA = 50;
@@ -29,15 +21,11 @@ public class Game {
     
     public Game(String playerName) {
         this.player = new Wizard(playerName, DEFAULT_HEALTH, DEFAULT_MANA);
-        // Polimorfizmas: AI yra AIWizard tipo, kuris skirtingai realizuoja attack() metodą
         this.ai = new AIWizard("AI Burtininkas", DEFAULT_HEALTH, DEFAULT_MANA);
         this.aiController = new AI();
         this.scanner = new Scanner(System.in);
         this.turnNumber = 1;
         this.lastPlayerSpell = null;
-        
-        // Polimorfizmas: įtraukiame visus kovotojus į sąrašą per bendrą Combatant tipą
-        // Visi objektai gali būti naudojami per bendrą tipą, bet elgiasi taip pat kaip prieš refaktoringą
         this.combatants = new ArrayList<>();
         this.combatants.add(player);
         this.combatants.add(ai);
@@ -169,7 +157,7 @@ public class Game {
             return;
         }
         
-        Spell chosenSpell = aiController.chooseSpell(ai, player); // AI renkas burta
+        Spell chosenSpell = aiController.chooseSpell(ai, player);
         
         if (chosenSpell == null) {
             System.out.println("AI burtininkas neturi pakankamai manos!");
