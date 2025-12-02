@@ -1,9 +1,5 @@
 package org.example.wizard;
 
-/**
- * Design Pattern: Factory Method
- * Sukuria Spell objektus pagal tipą, paslėpdamas sudėtingą objektų sukūrimo logiką.
- */
 public class SpellFactory {
     
     public static Spell createDamageSpell(String name, int manaCost, int damage) {
@@ -36,4 +32,3 @@ public class SpellFactory {
         return createStatusSpell(name, manaCost, silenceEffect);
     }
 }
-
