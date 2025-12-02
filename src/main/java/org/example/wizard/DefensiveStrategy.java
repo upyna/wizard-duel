@@ -2,10 +2,6 @@ package org.example.wizard;
 
 import java.util.List;
 
-/**
- * Design Pattern: Strategy
- * Gynybiniu strategija - pirmiausia bando gydytis arba apsisaugoti.
- */
 public class DefensiveStrategy implements AIStrategy {
     
     @Override
@@ -15,24 +11,21 @@ public class DefensiveStrategy implements AIStrategy {
         }
         
         double healthRatio = (double) aiWizard.getHealth() / aiWizard.getMaxHealth();
-        
-        // Jei mažai gyvybių, bando gydytis
+
         if (healthRatio < 0.3) {
             Spell healSpell = findSpellByType(availableSpells, Spell.SpellType.HEAL);
             if (healSpell != null) {
                 return healSpell;
             }
         }
-        
-        // Jei nėra skydo, bando jį sukurti
+
         if (aiWizard.getShield() == 0) {
             Spell shieldSpell = findSpellByType(availableSpells, Spell.SpellType.PROTECTION);
             if (shieldSpell != null) {
                 return shieldSpell;
             }
         }
-        
-        // Tik tada atakuoja
+
         return findHighestDamageSpell(availableSpells);
     }
     
@@ -50,4 +43,3 @@ public class DefensiveStrategy implements AIStrategy {
                 .orElse(null);
     }
 }
-
